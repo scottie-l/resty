@@ -1,36 +1,49 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import './form.scss';
 
-class Form extends React.Component { // function Form(props) 
-
-  handleSubmit = e => { //function handleSubmit(e) {
+function Form(props) {
+  const handleSubmit = e => {
     e.preventDefault();
-    const formData = {
-      method:'GET',
-      url: 'https://pokeapi.co/api/v2/pokemon',
-    };
-    this.props.handleApiCall(formData); //props.handleApiCall(formData);
-  }
+    const formData = { ...props.requestParams };
+    // GET method
 
-  render() {
-    return (
-      <>
-        <form onSubmit={this.handleSubmit}> // <form onSubmit={handleSubmit}></form>
-          <label >
-            <span>URL: </span>
-            <input name='url' type='text' />
-            <button type="submit">GO!</button>
-          </label>
-          <label className="methods">
-            <span id="get">GET</span>
-            <span id="post">POST</span>
-            <span id="put">PUT</span>
-            <span id="delete">DELETE</span>
-          </label>
-        </form>
-      </>
-    );
-  }
+    props.handleApiCall(formData);
+  };
+
+  const handleUrlChange = (e) => {
+    let { name, value } = e.target;
+    props.setRequest((prevRequest) => ({ ...prevRequest, [name]: value }));
+  };
+
+  const handleMethodChange = (e) => {
+    let { value } = e.target;
+    props.setRequest((prevRequest) => ({...prevRequest, method: value}));
+  };
+
+  useEffect(() => {
+    return () => {
+      console.log('form removed');
+    };
+  });
+
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <label >
+          <span>URL: </span>
+          <input name='url' type='text' onChange={handleUrlChange} />
+          <button type="submit">GO!</button>
+        </label>
+        <label className="methods">
+          <span id="get" onClick={handleMethodChange}>GET</span>
+          <span id="post" onClick={handleMethodChange}>POST</span>
+          <span id="put" onClick={handleMethodChange}>PUT</span>
+          <span id="delete" onClick={handleMethodChange}>DELETE</span>
+        </label>
+      </form>
+    </>
+  );
 }
 
 export default Form;
